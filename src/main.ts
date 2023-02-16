@@ -12,18 +12,16 @@ async function bootstrap() {
     logger: new CustomLoggerService(),
   });
 
-  const apiConfigService = app.select(SharedModule).get(ApiConfigService);
-  CustomLoggerService.setGlobalPrefix(
-    apiConfigService.appConfig.applicationName,
-  );
+  const apiConfig = app.select(SharedModule).get(ApiConfigService);
+  CustomLoggerService.setGlobalPrefix(apiConfig.appConfig.applicationName);
   //helmet enabled
   app.use(helmet());
   //global exception filter
   app.useGlobalFilters(new AllExceptionFilter());
   //set prefix api
-  app.setGlobalPrefix(apiConfigService.apiPrefix);
+  app.setGlobalPrefix(`${apiConfig.apiPrefix}/${apiConfig.apiVersion}`);
   //default listen port
-  await app.listen(apiConfigService.appConfig.port);
+  await app.listen(apiConfig.appConfig.port);
 
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
