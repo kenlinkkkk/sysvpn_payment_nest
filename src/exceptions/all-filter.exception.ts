@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { MESSAGE_DEFAULT } from 'src/common/constants';
+import { Message } from 'src/common/constants';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -21,7 +21,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const message =
       exception instanceof HttpException
         ? exception.message
-        : MESSAGE_DEFAULT.UNKNOWN_EXCEPTION_MESSAGE;
+        : Message.UNKNOWN_EXCEPTION_MESSAGE;
 
     response.status(status).json({
       success: false,

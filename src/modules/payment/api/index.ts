@@ -1,1 +1,1 @@
-import { PaypalApi } from './paypal/paypal.api';
+export { PaypalApi } from './paypal/paypal.api';

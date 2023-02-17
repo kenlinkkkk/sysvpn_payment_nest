@@ -1,3 +1,3 @@
-export const MESSAGE_DEFAULT = {
-  UNKNOWN_EXCEPTION_MESSAGE: 'Internal server error',
-};
+export enum Message {
+  UNKNOWN_EXCEPTION_MESSAGE = 'Internal server error',
+}

@@ -2,11 +2,11 @@ import { Global, Module } from '@nestjs/common';
 import { CustomLoggerService } from './services/custom-logger.service';
 import { StringUtils } from './services/string-utils.service';
 
-const providers = [CustomLoggerService, StringUtils];
+const providers = [StringUtils, CustomLoggerService];
 
 @Global()
 @Module({
-  providers: [],
+  providers,
   imports: [],
   exports: [...providers],
 })
