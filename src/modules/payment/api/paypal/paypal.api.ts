@@ -26,11 +26,11 @@ export class PaypalApi extends Api implements PaypalApiInterface {
     super(baseUrl);
   }
 
-  createRequestId(): string {
+  createRequestId(action): string {
     const localTime = new Date();
     return this.apiConfig.nodeEnv === 'production'
-      ? `P-${localTime.getTime()}`
-      : `D-${localTime.getTime()}`;
+      ? `${action}-P-${localTime.getTime()}`
+      : `${action}D-${localTime.getTime()}`;
   }
 
   AUTH: ApiEndPoint = { path: 'oauth2/token', method: 'POST' };
