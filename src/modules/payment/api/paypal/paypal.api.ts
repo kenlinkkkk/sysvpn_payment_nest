@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Method } from 'axios';
-import qs from 'qs';
+import * as qs from 'qs';
 import { Api } from '../api';
 import { ApiConfigService } from '../../../../shared/services/api-config.service';
 import { PaypalAction, UrlRequest } from './paypal.constant';
@@ -33,7 +33,7 @@ export class PaypalApi extends Api implements PaypalApiInterface {
       : `${action}D-${localTime.getTime()}`;
   }
 
-  AUTH: ApiEndPoint = { path: 'oauth2/token', method: 'POST' };
+  AUTH: ApiEndPoint = { path: 'v1/oauth2/token', method: 'POST' };
   async auth() {
     const { path, method } = this.AUTH;
     const token = `${this.apiConfig.paypalConfig.clientId}:${this.apiConfig.paypalConfig.secretKey}`;

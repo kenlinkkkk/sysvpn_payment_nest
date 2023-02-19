@@ -48,7 +48,7 @@ export class Api implements ApiInterface {
 
       return response.data;
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
 }

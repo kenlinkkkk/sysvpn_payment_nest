@@ -19,7 +19,7 @@ export class ApiConfigService extends ConfigAbstract {
   }
 
   get apiVersion() {
-    return `v${this.getString('API_VERSION')}`;
+    return `${this.getString('API_VERSION')}`;
   }
 
   get telegramToken() {

@@ -14,6 +14,7 @@ async function bootstrap() {
 
   const apiConfig = app.select(SharedModule).get(ApiConfigService);
   CustomLoggerService.setGlobalPrefix(apiConfig.appConfig.applicationName);
+
   //helmet enabled
   app.use(helmet());
   //global exception filter
