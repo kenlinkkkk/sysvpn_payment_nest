@@ -5,7 +5,7 @@ const REQUEST_TIMEOUT_MS = 3 * 1000; // 3 seconds
 
 interface ConfigInterface {
   params?: string | string[][];
-  data?: string | FormData;
+  data?: string | FormData | any;
   headers?: {
     Authorization?: string;
     'Content-Type'?: string;
@@ -52,3 +52,8 @@ export class Api implements ApiInterface {
     }
   }
 }
+
+export type ApiEndPoint = {
+  path: string;
+  method: Method;
+};

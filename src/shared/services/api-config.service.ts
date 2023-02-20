@@ -34,4 +34,8 @@ export class ApiConfigService extends ConfigAbstract {
       secretKey: this.getString('PAYPAL_SECRET_KEY'),
     };
   }
+
+  get apiKey() {
+    return this.getString('API_KEY');
+  }
 }

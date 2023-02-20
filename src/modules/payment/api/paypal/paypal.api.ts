@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Method } from 'axios';
 import * as qs from 'qs';
-import { Api } from '../api';
+import { Api, ApiEndPoint } from '../api';
 import { ApiConfigService } from '../../../../shared/services/api-config.service';
 import { PaypalAction, UrlRequest } from './paypal.constant';
 
@@ -9,11 +9,6 @@ interface PaypalApiInterface {
   auth(): Promise<any>;
   createProduct(data: any): Promise<any>;
 }
-
-type ApiEndPoint = {
-  path: string;
-  method: Method;
-};
 
 @Injectable()
 export class PaypalApi extends Api implements PaypalApiInterface {
@@ -48,7 +43,6 @@ export class PaypalApi extends Api implements PaypalApiInterface {
         grant_type: 'client_credentials',
       }),
     };
-
     return this.makeRequest(path, config, method);
   }
 
