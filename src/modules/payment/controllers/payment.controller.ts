@@ -1,13 +1,13 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { CustomLoggerService } from 'src/common/services/custom-logger.service';
 import { Response } from 'express';
-import { PaypalApi } from '../api';
+import { GooglePurchaseApi } from '../api';
 
 @Controller('payments')
 export class PaymentsController {
   private logger = new CustomLoggerService(PaymentsController.name, true);
 
-  constructor(private readonly PaypalApiService: PaypalApi) {}
+  constructor(private readonly PaypalApiService: GooglePurchaseApi) {}
 
   @Get()
   async Test(@Res() res: Response) {

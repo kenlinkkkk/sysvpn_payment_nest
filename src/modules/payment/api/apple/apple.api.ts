@@ -36,6 +36,11 @@ export class AppleApi extends Api implements AppleApiInterface {
       },
     };
 
-    return this.makeRequest(path, config, method);
+    const responseData = await this.makeRequest(path, config, method);
+    if (responseData.status === 21007 && this.allowSanbox) {
+      this.setBaseUrl(UrlRequest.SANDBOX_URL);
+      return this.makeRequest(path, config, method);
+    }
+    return responseData;
   }
 }

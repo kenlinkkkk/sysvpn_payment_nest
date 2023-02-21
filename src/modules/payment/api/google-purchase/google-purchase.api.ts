@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Api, ApiEndPoint } from '../api';
+import { google, Auth } from 'googleapis';
+import { GoogleConfig } from './google-purchase.constant';
+import { ApiConfigService } from 'src/shared/services/api-config.service';
 
 interface GooglePurchaseApiInterface {
   tokenVerify(): Promise<any>;
@@ -7,16 +10,26 @@ interface GooglePurchaseApiInterface {
 }
 
 @Injectable()
-export class GooglePurchaseApi
-  extends Api
-  implements GooglePurchaseApiInterface
-{
+export class GooglePurchaseApi implements GooglePurchaseApiInterface {
+  static OAUTH_SCOPE = ['https://www.googleapis.com/auth/androidpublisher'];
+
+  constructor(private readonly ApiConfig: ApiConfigService) {}
+
+  async auth(): Promise<any> {
+    const oauthClient = new google.auth.OAuth2(
+      GoogleConfig.client_id,
+      GoogleConfig.private_key,
+    );
+
+    return oauthClient;
+  }
+
   TOKEN_VERIFY: ApiEndPoint = { path: '', method: 'POST' };
-  tokenVerify(): Promise<any> {
+  async tokenVerify(): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
-  arknownledge(): Promise<any> {
+  async arknownledge(): Promise<any> {
     throw new Error('Method not implemented.');
   }
 }

@@ -28,8 +28,12 @@ export class Api implements ApiInterface {
     this.baseUrlStr = baseUrl;
   }
 
-  async getBaseUrl(): Promise<string> {
+  getBaseUrl() {
     return this.baseUrlStr;
+  }
+
+  setBaseUrl(baseUrl: string) {
+    this.baseUrlStr = baseUrl;
   }
 
   async makeRequest(

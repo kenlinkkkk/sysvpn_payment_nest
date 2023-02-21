@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Method } from 'axios';
 import * as qs from 'qs';
 import { Api, ApiEndPoint } from '../api';
 import { ApiConfigService } from '../../../../shared/services/api-config.service';
@@ -21,7 +20,7 @@ export class PaypalApi extends Api implements PaypalApiInterface {
     super(baseUrl);
   }
 
-  createRequestId(action): string {
+  createRequestId(action: string): string {
     const localTime = new Date();
     return this.apiConfig.nodeEnv === 'production'
       ? `${action}-P-${localTime.getTime()}`
@@ -46,9 +45,43 @@ export class PaypalApi extends Api implements PaypalApiInterface {
     return this.makeRequest(path, config, method);
   }
 
-  CREATE_PRODUCT: ApiEndPoint = { path: 'catalogs/product', method: 'POST' };
+  CREATE_PRODUCT: ApiEndPoint = { path: 'catalogs/products', method: 'POST' };
   async createProduct(data: any) {
     const { path, method } = this.CREATE_PRODUCT;
-    return null;
+    const authToken = await this.auth();
+
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + authToken.access_token,
+        'Content-Type': 'application/json',
+        'Paypal-Request-Id': this.createRequestId(PaypalAction.CREATE_PRODUCT),
+      },
+      data: {
+        name: data.productName,
+        description: data.longDescription,
+        type: 'SERVICE',
+        category: 'SOFTWARE',
+      },
+    };
+
+    return this.makeRequest(path, config, method);
+  }
+
+  PRODUCT_DETAIL: ApiEndPoint = { path: 'catalogs/products', method: 'GET' };
+  async productDetail(productId: string) {
+    // eslint-disable-next-line prefer-const
+    let { path, method } = this.PRODUCT_DETAIL;
+    path = `${path}/${productId}`;
+    const authToken = await this.auth();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authToken.access_token}`,
+        'Content-Type': 'application/json',
+        'Paypal-Request-Id': this.createRequestId(PaypalAction.DETAIL_PRODUCT),
+      },
+    };
+
+    return this.makeRequest(path, config, method);
   }
 }

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { PaypalApi } from './api';
+import { GooglePurchaseApi, PaypalApi } from './api';
 import { PackageController, PaymentsController } from './controllers';
 import { PackageService, PaymentService, SubscriberService } from './services';
 
-const ApiService = [PaypalApi];
+const ApiService = [PaypalApi, GooglePurchaseApi];
 
 const ModelService = [PackageService, PaymentService, SubscriberService];
 
