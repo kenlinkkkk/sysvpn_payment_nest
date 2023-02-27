@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Api, ApiEndPoint } from '../api';
-import { google, Auth } from 'googleapis';
-import { GoogleConfig } from './google-purchase.constant';
+import { Method } from 'axios';
+import { google } from 'googleapis';
+import * as config from 'src/config/google.config.json';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
+import { OAUTH_SCOPE, URL_PARTTERN } from './google-purchase.constant';
+import * as util from 'util';
+import axios from 'axios';
+import { ApiError } from 'src/utils/ApiError';
 
 interface GooglePurchaseApiInterface {
   tokenVerify(): Promise<any>;
@@ -11,20 +15,43 @@ interface GooglePurchaseApiInterface {
 
 @Injectable()
 export class GooglePurchaseApi implements GooglePurchaseApiInterface {
-  static OAUTH_SCOPE = ['https://www.googleapis.com/auth/androidpublisher'];
-
   constructor(private readonly ApiConfig: ApiConfigService) {}
 
-  async auth(): Promise<any> {
-    const oauthClient = new google.auth.OAuth2(
-      GoogleConfig.client_id,
-      GoogleConfig.private_key,
-    );
-
-    return oauthClient;
+  async authWithJWT(): Promise<any> {
+    try {
+      const oauthClient = new google.auth.JWT({
+        email: config.client_email,
+        key: config.private_key,
+        scopes: OAUTH_SCOPE,
+      });
+      const authInfo = oauthClient.authorize();
+      return authInfo;
+    } catch (error) {
+      // console.log(error);
+    }
   }
 
-  TOKEN_VERIFY: ApiEndPoint = { path: '', method: 'POST' };
+  async makeRequest(config: any, method: Method): Promise<any> {
+    const authToken = await this.authWithJWT();
+    const urlRequest = util.format(
+      URL_PARTTERN,
+      encodeURIComponent(config.packageName),
+      encodeURIComponent(config.productId),
+      encodeURIComponent(config.purchaseToken),
+    );
+    try {
+      const responseAxios = await axios({
+        url: urlRequest,
+        method: method,
+        headers: {
+          authorization: `Bearer ${authToken.access_token}`,
+        },
+      });
+      return responseAxios.data;
+    } catch (error) {
+    }
+  }
+
   async tokenVerify(): Promise<any> {
     throw new Error('Method not implemented.');
   }

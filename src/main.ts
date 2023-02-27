@@ -18,7 +18,7 @@ async function bootstrap() {
   //helmet enabled
   app.use(helmet());
   //global exception filter
-  app.useGlobalFilters(new AllExceptionFilter());
+  // app.useGlobalFilters(new AllExceptionFilter());
   //set prefix api
   app.setGlobalPrefix(`${apiConfig.apiPrefix}/${apiConfig.apiVersion}`);
   //default listen port
