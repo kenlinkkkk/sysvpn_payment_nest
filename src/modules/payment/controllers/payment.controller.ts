@@ -15,10 +15,10 @@ export class PaymentsController {
       packageName: 'com.sysvpn.client.android',
       productId: 'monthly_trial',
       purchaseToken:
-        'aegmjheffkdpdohlgdgjaofd.AO-J1Oxsh2xb4uOIuBwGLY1g7KGslpYUS-91DgZhJnwl2-0DFLIg8YjVOqtgivsanx-PX-r5bv1fzRephllaD285oKqE9ys2Z26DX2r1Vlh6LqwTFwUxZC',
+        'iiflobnbhalpmcgjenmbahnn.AO-J1OyU03tZIhMyq9xdL6wIwjUBdh2tNZaKU1JdbizntLlvGTUJHcnV-yxG0EauwRf6SG0o5HwIb1IfGGNp_vu4HK2jcpzM4wRRHWQ59mfRXvRPqSA_kM8',
       type: 'GOOGLE_INAPP',
     };
-    const test = await this.PaypalApiService.makeRequest(config, 'GET');
+    const test = await this.PaypalApiService.get(config);
     this.logger.log(test, 'Test');
     return res.status(HttpStatus.OK).json(test);
   }

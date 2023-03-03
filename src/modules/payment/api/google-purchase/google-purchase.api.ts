@@ -6,13 +6,26 @@ import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { OAUTH_SCOPE, URL_PARTTERN } from './google-purchase.constant';
 import * as util from 'util';
 import axios from 'axios';
-import { ApiError } from 'src/utils/ApiError';
+import { UrlRequest } from '../paypal/paypal.constant';
 
 interface GooglePurchaseApiInterface {
-  tokenVerify(): Promise<any>;
-  arknownledge(): Promise<any>;
+  acknownledge(payload: PayloadRequest): Promise<any>;
+  get(payload: PayloadRequest): Promise<any>;
+  defer(payload: PayloadRequest): Promise<any>;
+  refund(payload: PayloadRequest): Promise<any>;
+  revoke(payload: PayloadRequest): Promise<any>;
+  cancel(payload: PayloadRequest): Promise<any>;
+}
+interface ConfigInterface {
+  data?: string | FormData | string[][];
+  params?: string | string[][];
 }
 
+interface PayloadRequest {
+  packageName: string;
+  productId: string;
+  purchaseToken: string;
+}
 @Injectable()
 export class GooglePurchaseApi implements GooglePurchaseApiInterface {
   constructor(private readonly ApiConfig: ApiConfigService) {}
@@ -27,18 +40,16 @@ export class GooglePurchaseApi implements GooglePurchaseApiInterface {
       const authInfo = oauthClient.authorize();
       return authInfo;
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   }
 
-  async makeRequest(config: any, method: Method): Promise<any> {
+  private async makeRequest(
+    urlRequest: string,
+    method: Method,
+    config?: ConfigInterface,
+  ): Promise<any> {
     const authToken = await this.authWithJWT();
-    const urlRequest = util.format(
-      URL_PARTTERN,
-      encodeURIComponent(config.packageName),
-      encodeURIComponent(config.productId),
-      encodeURIComponent(config.purchaseToken),
-    );
     try {
       const responseAxios = await axios({
         url: urlRequest,
@@ -46,17 +57,63 @@ export class GooglePurchaseApi implements GooglePurchaseApiInterface {
         headers: {
           authorization: `Bearer ${authToken.access_token}`,
         },
+        ...config,
       });
       return responseAxios.data;
     } catch (error) {
+      return error.response.data;
     }
   }
 
-  async tokenVerify(): Promise<any> {
-    throw new Error('Method not implemented.');
+  private makeUrlRequest(payload: PayloadRequest, transcode?: string): string {
+    return util.format(
+      URL_PARTTERN,
+      encodeURIComponent(payload.packageName),
+      encodeURIComponent(payload.productId),
+      encodeURIComponent(payload.purchaseToken),
+      transcode,
+    );
   }
 
-  async arknownledge(): Promise<any> {
-    throw new Error('Method not implemented.');
+  DEFER_PURCHASE_TOKEN = { method: 'POST', transcode: ':derfer' };
+  async defer(payload: PayloadRequest): Promise<any> {
+    const { method, transcode } = this.DEFER_PURCHASE_TOKEN;
+    const urlRequest = this.makeUrlRequest(payload, transcode);
+    return this.makeRequest(urlRequest, method as Method);
+  }
+
+  REFUND_PURCHASE_TOKEN = { method: 'POST', transcode: ':refund' };
+  async refund(payload: PayloadRequest): Promise<any> {
+    const { method, transcode } = this.DEFER_PURCHASE_TOKEN;
+    const urlRequest = this.makeUrlRequest(payload, transcode);
+    return this.makeRequest(urlRequest, method as Method);
+  }
+
+  REVOKE_PURCHASE_TOKEN = { method: 'POST', transcode: ':revoke' };
+  async revoke(payload: PayloadRequest): Promise<any> {
+    const { method, transcode } = this.DEFER_PURCHASE_TOKEN;
+    const urlRequest = this.makeUrlRequest(payload, transcode);
+    return this.makeRequest(urlRequest, method as Method);
+  }
+
+  CANCEL_PURCHASE_TOKEN = { method: 'POST', transcode: ':cancel' };
+  async cancel(payload: PayloadRequest): Promise<any> {
+    const { method, transcode } = this.DEFER_PURCHASE_TOKEN;
+    const urlRequest = this.makeUrlRequest(payload, transcode);
+    return this.makeRequest(urlRequest, method as Method);
+  }
+
+  GET_INFO_PURCHASE_TOKEN = { method: 'GET', transcode: '' };
+  async get(payload: PayloadRequest): Promise<any> {
+    const { method, transcode } = this.DEFER_PURCHASE_TOKEN;
+    const urlRequest = this.makeUrlRequest(payload, transcode);
+    return this.makeRequest(urlRequest, method as Method);
+  }
+
+  ACKNOWNLEDGE_PURCHASE_TOKEN = { method: 'POST', transcode: ':acknowledge' };
+  async acknownledge(payload: PayloadRequest): Promise<any> {
+    const { method, transcode } = this.DEFER_PURCHASE_TOKEN;
+    const urlRequest = this.makeUrlRequest(payload, transcode);
+    return this.makeRequest(urlRequest, method as Method);
   }
 }
