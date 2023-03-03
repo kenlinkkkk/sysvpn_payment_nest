@@ -2,8 +2,17 @@ export enum PackageTypeSchema {
   GoogleInApp = 'GOOGLE_INAPP',
   AppleInApp = 'APPLE_INAPP',
   AppleMacOS = 'APPLE_MACOS',
-  PAYPAL = 'PAYPAL',
+  PayPal = 'PAYPAL',
+  Crypto = 'CRYPTO',
 }
+
+export const TypePurchased = {
+  [PackageTypeSchema.GoogleInApp]: 'Google',
+  [PackageTypeSchema.AppleInApp]: 'Apple',
+  [PackageTypeSchema.AppleMacOS]: 'Apple',
+  [PackageTypeSchema.PayPal]: 'PayPal',
+  [PackageTypeSchema.Crypto]: 'Crypto',
+};
 
 export enum TimeUnit {
   Second = 'SECOND',
